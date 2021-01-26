@@ -1,12 +1,11 @@
 package com.phoebus.library.userlibrary;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.Serializable;
 
 @Entity
@@ -15,6 +14,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(builderClassName = "Builder")
 public class UserLibrary implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -27,4 +27,23 @@ public class UserLibrary implements Serializable {
     private String phone;
     private String email;
     private String gender;
+
+    public static UserLibrary to(UserLibraryDTO userLibraryDTO) {
+        return UserLibrary.builder()
+                .id(userLibraryDTO.getId())
+                .name(userLibraryDTO.getName())
+                .age(userLibraryDTO.getAge())
+                .phone(userLibraryDTO.getPhone())
+                .email(userLibraryDTO.getEmail())
+                .gender(userLibraryDTO.getGender())
+                .build();
+    }
+
+    public static List<UserLibrary> to(List<UserLibraryDTO> userLibraryDTOList) {
+        List<UserLibrary> userLibraryList = new ArrayList<>();
+        for(UserLibraryDTO userLibraryDTO : userLibraryDTOList) {
+            userLibraryList.add(UserLibrary.to(userLibraryDTO));
+        }
+        return userLibraryList;
+    }
 }
