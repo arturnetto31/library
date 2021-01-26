@@ -1,6 +1,7 @@
 package com.phoebus.library.purchase;
 
 
+import com.phoebus.library.book.Book;
 import com.phoebus.library.userlibrary.UserLibrary;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class PurchaseDTO {
     @NotEmpty(message = "Customer may not be empty")
     private UserLibrary customer;
     @NotEmpty(message = "Shopping list may not be empty")
-    private List<Long> shoppingList;
+    private List<Book> shoppingList;
     @NotEmpty(message = "Price to pay may not be empty")
     private double priceToPay;
     @NotEmpty(message = "Purchase date may not be empty")

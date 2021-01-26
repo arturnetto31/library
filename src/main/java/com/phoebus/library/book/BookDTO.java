@@ -1,5 +1,6 @@
 package com.phoebus.library.book;
 
+import com.phoebus.library.categoryofbook.CategoryOfBook;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -29,7 +30,7 @@ public class BookDTO {
     @NotEmpty(message = "Quantity Available may not be empty")
     private int quantityAvailable;
     @NotEmpty(message = "Category may not be empty")
-    private List<String> category;
+    private List<CategoryOfBook> category;
 
     public static BookDTO from(Book book){
         return BookDTO.builder()
