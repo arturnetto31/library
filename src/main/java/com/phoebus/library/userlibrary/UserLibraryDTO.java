@@ -33,6 +33,8 @@ public class UserLibraryDTO {
                 .age(userLibrary.getAge())
                 .name(userLibrary.getName())
                 .phone(userLibrary.getPhone())
+                .email(userLibrary.getEmail())
+                .gender(userLibrary.getGender())
                 .build();
     }
     public static List<UserLibraryDTO> from(List<UserLibrary> users) {
