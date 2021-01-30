@@ -25,7 +25,10 @@ public class UserLibrary implements Serializable {
     private String name;
     private int age;
     private String phone;
+
+    @Column(unique = true)
     private String email;
+
     private String gender;
 
     public static UserLibrary to(UserLibraryDTO userLibraryDTO) {

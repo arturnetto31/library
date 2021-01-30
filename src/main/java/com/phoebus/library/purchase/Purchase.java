@@ -3,13 +3,11 @@ package com.phoebus.library.purchase;
 
 import com.phoebus.library.book.Book;
 import com.phoebus.library.userlibrary.UserLibrary;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Purchase implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -30,15 +29,29 @@ public class Purchase implements Serializable {
     private UserLibrary customer;
 
     @ManyToMany
-    /*
-    @JoinTable(name = "SELL_BOOK",
-            joinColumns = @JoinColumn(name = "PURCHASE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "BOOK_ID"))
-     */
     @PrimaryKeyJoinColumn
     private List<Book> shoppingList;
 
     private double priceToPay;
     private String purchaseDate;
     private boolean purchaseIsCompleted;
+
+    public static Purchase to(PurchaseDTO purchaseDTO) {
+        return Purchase.builder()
+                .id(purchaseDTO.getId())
+                .customer(purchaseDTO.getCustomer())
+                .shoppingList(purchaseDTO.getShoppingList())
+                .priceToPay(purchaseDTO.getPriceToPay())
+                .purchaseDate(purchaseDTO.getPurchaseDate())
+                .purchaseIsCompleted(purchaseDTO.isPurchaseCompleted())
+                .build();
+    }
+
+    public static List<Purchase> to(List<PurchaseDTO> purchaseDTOS) {
+        List<Purchase> listPurchase = new ArrayList<>();
+        for(PurchaseDTO purchaseDTO : purchaseDTOS) {
+            listPurchase.add(Purchase.to(purchaseDTO));
+        }
+        return listPurchase;
+    }
 }
