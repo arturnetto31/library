@@ -21,7 +21,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @Tag("service")
@@ -49,16 +52,16 @@ public class EditUserServiceTest {
         editUserServiceImpl.editUserLibrary(1L, userLibraryDTO);
 
         ArgumentCaptor<UserLibrary> captorUserLibrary = ArgumentCaptor.forClass(UserLibrary.class);
-        verify(repository).save(captorUserLibrary.capture());
+        verify(repository, times(1)).save(captorUserLibrary.capture());
 
         UserLibrary result = captorUserLibrary.getValue();
 
         assertAll("User",
-                () -> assertThat(result.getName(), is(userLibraryDTO.getName())),
-                () -> assertThat(result.getAge(), is(userLibraryDTO.getAge())),
-                () -> assertThat(result.getPhone(), is(userLibraryDTO.getPhone())),
-                () -> assertThat(result.getEmail(), is(userLibraryDTO.getEmail())),
-                () -> assertThat(result.getGender(), is(userLibraryDTO.getGender()))
+                () -> assertThat(result.getName(), is("Teste")),
+                () -> assertThat(result.getAge(), is(22)),
+                () -> assertThat(result.getPhone(), is("0000-0000")),
+                () -> assertThat(result.getEmail(), is("teste@teste.com")),
+                () -> assertThat(result.getGender(), is("M"))
         );
     }
 

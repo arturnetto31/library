@@ -18,7 +18,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test to know if the function of find User Library by ID it's valid")
@@ -45,11 +47,11 @@ public class GetUserServiceTest {
         UserLibraryDTO result = this.getUserService.getUserLibrary(1L);
 
         assertAll("Test",
-                () -> assertThat(result.getName(), is(userLibrary.getName())),
-                () -> assertThat(result.getAge(), is(userLibrary.getAge())),
-                () -> assertThat(result.getEmail(), is(userLibrary.getEmail())),
-                () -> assertThat(result.getPhone(), is(userLibrary.getPhone())),
-                () -> assertThat(result.getGender(), is(userLibrary.getGender()))
+                () -> assertThat(result.getName(), is("Test")),
+                () -> assertThat(result.getAge(), is(22)),
+                () -> assertThat(result.getEmail(), is("teste@teste.com")),
+                () -> assertThat(result.getPhone(), is("0000-0000")),
+                () -> assertThat(result.getGender(),is("M"))
         );
     }
 

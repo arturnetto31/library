@@ -18,7 +18,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+
+
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test to verify if the system could be save an User Library")
@@ -44,16 +48,23 @@ public class SaveUserServiceTest {
         saveUserService.save(saveThatUser);
 
         ArgumentCaptor<UserLibrary> captorUser = ArgumentCaptor.forClass(UserLibrary.class);
-        verify(repository).save(captorUser.capture());
+        verify(repository, times(1)).save(captorUser.capture());
 
         UserLibrary result = captorUser.getValue();
 
         assertAll("User Library",
-                () -> assertThat(result.getName(), is(userLibraryDTO.getName())),
+               /* () -> assertThat(result.getName(), is(userLibraryDTO.getName())),
                 () -> assertThat(result.getAge(), is(userLibraryDTO.getAge())),
                 () -> assertThat(result.getEmail(), is(userLibraryDTO.getEmail())),
                 () -> assertThat(result.getPhone(), is(userLibraryDTO.getPhone())),
                 () -> assertThat(result.getGender(),is(userLibraryDTO.getGender()))
+                );
+                */
+                () -> assertThat(result.getName(), is("Test")),
+                () -> assertThat(result.getAge(), is(22)),
+                () -> assertThat(result.getEmail(), is("teste@teste.com")),
+                () -> assertThat(result.getPhone(), is("0000-0000")),
+                () -> assertThat(result.getGender(),is("M"))
                 );
 
     }
