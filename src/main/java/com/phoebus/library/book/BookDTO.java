@@ -2,6 +2,7 @@ package com.phoebus.library.book;
 
 import com.phoebus.library.categoryofbook.CategoryOfBook;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
@@ -49,5 +50,9 @@ public class BookDTO {
             bookDTOS.add(BookDTO.from(book));
         }
         return bookDTOS;
+    }
+
+    public static Page<BookDTO> from(Page<Book> pages) {
+        return pages.map(BookDTO::from);
     }
 }

@@ -2,6 +2,7 @@ package com.phoebus.library.userlibrary;
 
 
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
@@ -43,5 +44,9 @@ public class UserLibraryDTO {
             userLibraryDTOS.add(UserLibraryDTO.from(userLibrary));
         }
         return userLibraryDTOS;
+    }
+
+    public static Page<UserLibraryDTO> from(Page<UserLibrary> pages) {
+        return pages.map(UserLibraryDTO::from);
     }
 }

@@ -3,6 +3,7 @@ package com.phoebus.library.book;
 
 import com.phoebus.library.categoryofbook.CategoryOfBook;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -56,5 +57,9 @@ public class Book implements Serializable {
         }
 
         return listBook;
+    }
+
+    public static Page<Book> to(Page<BookDTO> pages) {
+        return pages.map(Book::to);
     }
 }

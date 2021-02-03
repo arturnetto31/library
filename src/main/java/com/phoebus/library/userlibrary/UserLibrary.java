@@ -1,9 +1,19 @@
 package com.phoebus.library.userlibrary;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
@@ -48,5 +58,9 @@ public class UserLibrary implements Serializable {
             userLibraryList.add(UserLibrary.to(userLibraryDTO));
         }
         return userLibraryList;
+    }
+
+    public static Page<UserLibrary> to(Page<UserLibraryDTO> pages) {
+        return pages.map(UserLibrary::to);
     }
 }

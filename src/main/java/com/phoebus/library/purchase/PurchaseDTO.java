@@ -4,6 +4,7 @@ package com.phoebus.library.purchase;
 import com.phoebus.library.book.Book;
 import com.phoebus.library.userlibrary.UserLibrary;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
@@ -45,5 +46,9 @@ public class PurchaseDTO {
             listPurchaseDTOS.add(PurchaseDTO.from(purchase));
         }
         return listPurchaseDTOS;
+    }
+
+    public static Page<PurchaseDTO> from(Page<Purchase> pages) {
+        return pages.map(PurchaseDTO::from);
     }
 }

@@ -4,6 +4,7 @@ package com.phoebus.library.purchase;
 import com.phoebus.library.book.Book;
 import com.phoebus.library.userlibrary.UserLibrary;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,5 +54,9 @@ public class Purchase implements Serializable {
             listPurchase.add(Purchase.to(purchaseDTO));
         }
         return listPurchase;
+    }
+
+    public static Page<Purchase> to(Page<PurchaseDTO> pages) {
+        return pages.map(Purchase::to);
     }
 }

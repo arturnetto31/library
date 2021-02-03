@@ -5,6 +5,7 @@ import com.phoebus.library.userlibrary.UserLibrary;
 import com.phoebus.library.userlibrary.UserLibraryDTO;
 import com.phoebus.library.userlibrary.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class UserLibraryControllerV1 {
     private final GetUserService getUserService;
     private final ListUserService listUserService;
     private final SaveUserService saveUserService;
+    private final ListPageUserService listPageUserService;
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -43,6 +45,12 @@ public class UserLibraryControllerV1 {
     @ResponseStatus(HttpStatus.OK)
     public UserLibraryDTO userLibraryDTObyID(@PathVariable(value="id") Long id) {
         return getUserService.getUserLibrary(id);
+    }
+
+    @GetMapping(params = {"page", "size"})
+    @ResponseStatus(HttpStatus.OK)
+    public Page<UserLibraryDTO> findPage(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return listPageUserService.listUserOnPage(page,size);
     }
 
     @PutMapping(value="/{id}")

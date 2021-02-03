@@ -3,21 +3,31 @@ package com.phoebus.library.purchase.v1;
 
 import com.phoebus.library.purchase.Purchase;
 import com.phoebus.library.purchase.PurchaseDTO;
-import com.phoebus.library.purchase.service.*;
+import com.phoebus.library.purchase.service.DeletePurchaseService;
+import com.phoebus.library.purchase.service.SavePurchaseService;
+import com.phoebus.library.purchase.service.AttPurchaseService;
+import com.phoebus.library.purchase.service.GetPurchaseService;
+import com.phoebus.library.purchase.service.ListPurchaseService;
+import com.phoebus.library.purchase.service.ListPagePurchaseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/v1/purchases")
 public class PurchaseControllerV1 {
 
-    private DeletePurchaseService deletePurchaseService;
-    private SavePurchaseService savePurchaseService;
-    private AttPurchaseService attPurchaseService;
-    private GetPurchaseService getPurchaseService;
-    private ListPurchaseService listPurchaseService;
+    private final DeletePurchaseService deletePurchaseService;
+    private final SavePurchaseService savePurchaseService;
+    private final AttPurchaseService attPurchaseService;
+    private final GetPurchaseService getPurchaseService;
+    private final ListPurchaseService listPurchaseService;
+    private final ListPagePurchaseService listPagePurchaseService;
+
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -39,13 +49,19 @@ public class PurchaseControllerV1 {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void getPurchaseById(@PathVariable("id") Long id) {
-        getPurchaseService.getPurchase(id);
+    public PurchaseDTO getPurchaseById(@PathVariable("id") Long id) {
+        return getPurchaseService.getPurchase(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public void listPurchases(){
-        listPurchaseService.listPurchases();
+    public List<PurchaseDTO> listPurchases(){
+        return listPurchaseService.listPurchases();
+    }
+
+    @GetMapping(params = {"page","size"})
+    @ResponseStatus(HttpStatus.OK)
+    public Page<PurchaseDTO> findPage(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return listPagePurchaseService.listPurchaseOnPage(page, size);
     }
 }

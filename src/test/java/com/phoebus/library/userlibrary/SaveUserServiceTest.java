@@ -1,6 +1,7 @@
 package com.phoebus.library.userlibrary;
 
 
+import com.phoebus.library.exceptions.UserInconsistencyInDataException;
 import com.phoebus.library.userlibrary.service.SaveUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,9 @@ import static com.phoebus.library.userlibrary.builders.UserLibraryBuilderDTO.cre
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test to verify if the system could be save an User Library")
@@ -53,5 +56,14 @@ public class SaveUserServiceTest {
                 () -> assertThat(result.getGender(),is(userLibraryDTO.getGender()))
                 );
 
+    }
+
+    @Test
+    @DisplayName("Shouldn't save an User Library and Throws an Exception")
+    void shouldNotSaveUser() {
+        when(repository.save(any())).thenThrow(new UserInconsistencyInDataException());
+
+        assertThrows(UserInconsistencyInDataException.class,() -> saveUserService.save(any()));
+        verify(repository, times(0)).save(any());
     }
 }

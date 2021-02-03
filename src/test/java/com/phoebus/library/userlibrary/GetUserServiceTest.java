@@ -11,6 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static com.phoebus.library.userlibrary.builders.UserLibraryBuilder.createUserLibrary;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -32,11 +38,19 @@ public class GetUserServiceTest {
     @DisplayName("Should returns an User Library")
     void shouldGetUser() {
 
-        when(repository.existsById(anyLong())).thenReturn(true);
+        UserLibrary userLibrary = createUserLibrary().build();
+        Optional<UserLibrary> userLibraryOptional = Optional.of(userLibrary);
+        when(repository.findById(anyLong())).thenReturn(userLibraryOptional);
 
-        getUserService.getUserLibrary(1L);
+        UserLibraryDTO result = this.getUserService.getUserLibrary(1L);
 
-        verify(repository).findById(anyLong());
+        assertAll("Test",
+                () -> assertThat(result.getName(), is(userLibrary.getName())),
+                () -> assertThat(result.getAge(), is(userLibrary.getAge())),
+                () -> assertThat(result.getEmail(), is(userLibrary.getEmail())),
+                () -> assertThat(result.getPhone(), is(userLibrary.getPhone())),
+                () -> assertThat(result.getGender(), is(userLibrary.getGender()))
+        );
     }
 
     @Test

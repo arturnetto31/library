@@ -2,7 +2,6 @@ package com.phoebus.library.userlibrary;
 
 
 import com.phoebus.library.exceptions.UserInconsistencyInDataException;
-import com.phoebus.library.userlibrary.service.EditUserService;
 import com.phoebus.library.userlibrary.service.EditUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static com.phoebus.library.userlibrary.builders.UserLibraryBuilder.createUserLibrary;
@@ -56,7 +54,12 @@ public class EditUserServiceTest {
         UserLibrary result = captorUserLibrary.getValue();
 
         assertAll("User",
-                () -> assertThat(result.getName(), is(userLibraryDTO.getName())));
+                () -> assertThat(result.getName(), is(userLibraryDTO.getName())),
+                () -> assertThat(result.getAge(), is(userLibraryDTO.getAge())),
+                () -> assertThat(result.getPhone(), is(userLibraryDTO.getPhone())),
+                () -> assertThat(result.getEmail(), is(userLibraryDTO.getEmail())),
+                () -> assertThat(result.getGender(), is(userLibraryDTO.getGender()))
+        );
     }
 
 

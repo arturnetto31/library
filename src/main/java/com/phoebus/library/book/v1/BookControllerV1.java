@@ -5,6 +5,7 @@ import com.phoebus.library.book.Book;
 import com.phoebus.library.book.BookDTO;
 import com.phoebus.library.book.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class BookControllerV1 {
     private final GetBookService getBookService;
     private final ListBookService listBookService;
     private final SaveBookService saveBookService;
+    private final ListPageBookService listPageBookService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,5 +51,11 @@ public class BookControllerV1 {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDTO> listOfBooks() {
         return listBookService.listBooks();
+    }
+
+    @GetMapping(params = {"page", "size"})
+    @ResponseStatus(HttpStatus.OK)
+    public Page<BookDTO> findPage(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return listPageBookService.listBookOnPage(page,size);
     }
 }
