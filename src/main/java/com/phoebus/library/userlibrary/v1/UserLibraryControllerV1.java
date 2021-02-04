@@ -3,25 +3,12 @@ package com.phoebus.library.userlibrary.v1;
 
 import com.phoebus.library.userlibrary.UserLibrary;
 import com.phoebus.library.userlibrary.UserLibraryDTO;
-import com.phoebus.library.userlibrary.service.DeleteUserService;
-import com.phoebus.library.userlibrary.service.EditUserService;
-import com.phoebus.library.userlibrary.service.GetUserService;
-import com.phoebus.library.userlibrary.service.ListPageUserService;
-import com.phoebus.library.userlibrary.service.ListUserService;
-import com.phoebus.library.userlibrary.service.SaveUserService;
+import com.phoebus.library.userlibrary.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -61,10 +48,10 @@ public class UserLibraryControllerV1 {
         return getUserService.getUserLibrary(id);
     }
 
-    @GetMapping(params = {"page", "size"})
+    @GetMapping(path = {"/page"})
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserLibraryDTO> findPage(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        return listPageUserService.listUserOnPage(page,size);
+    public Page<UserLibraryDTO> findPage(Pageable pageable) {
+        return listPageUserService.listUserOnPage(pageable);
     }
 
     @PutMapping(value="/{id}")

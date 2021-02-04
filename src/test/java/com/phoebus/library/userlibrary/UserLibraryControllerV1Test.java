@@ -2,8 +2,10 @@ package com.phoebus.library.userlibrary;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoebus.library.exceptions.UserNotFoundException;
 import com.phoebus.library.userlibrary.service.*;
 import com.phoebus.library.userlibrary.v1.UserLibraryControllerV1;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -12,17 +14,27 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.phoebus.library.userlibrary.builders.UserLibraryBuilderDTO.createUserLibraryDTO;
+import java.util.Collections;
 
+import static com.phoebus.library.userlibrary.builders.UserLibraryBuilder.createUserLibrary;
+import static com.phoebus.library.userlibrary.builders.UserLibraryBuilderDTO.createUserLibraryDTO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Tag("Controller")
@@ -98,5 +110,148 @@ public class UserLibraryControllerV1Test {
         assertThat(result.getEmail()).isEqualTo(userLibraryDTO.getEmail());
 
     }
-    
+
+    @Test
+    @DisplayName("Test to get an User Library by id")
+    void shouldGetAnUserID() throws Exception{
+
+        when(getUserService.getUserLibrary(anyLong())).thenReturn(createUserLibraryDTO().build());
+
+        mockMvc.perform(get(URL_USERLIBRARY + "/{id}", 1L).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Test")))
+                .andExpect(jsonPath("$.age", is(22)))
+                .andExpect(jsonPath("$.email", is("teste@teste.com")))
+                .andExpect(jsonPath("$.phone", is("0000-0000")))
+                .andExpect(jsonPath("$.gender", is("M")));
+
+        verify(getUserService).getUserLibrary(1L);
+    }
+
+    @Test
+    @DisplayName("Test to throws an Exception when the test try to find an User Library by id")
+    void shouldThrowsNotFoundUserID() throws Exception{
+        when(getUserService.getUserLibrary(anyLong())).thenThrow(new UserNotFoundException());
+
+        mockMvc.perform(get(URL_USERLIBRARY + "/{id}", 1L).accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(getUserService).getUserLibrary(1L);
+    }
+
+    @Test
+    @DisplayName("Test to list in a page of users library when succesfull")
+    void shouldGetAListPage() throws Exception {
+
+        Page<UserLibraryDTO> userLibraryDTOPage = new PageImpl<>(Collections.singletonList(createUserLibraryDTO().build()));
+
+        Pageable pageable = PageRequest.of(0,2);
+
+        mockMvc.perform(get(URL_USERLIBRARY + "/page/?page=0&size=2").accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id",   is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Test")))
+                .andExpect(jsonPath("$.content[0].age",  is(22)))
+                .andExpect(jsonPath("$.content[0].email",is("teste@teste.com")))
+                .andExpect(jsonPath("$.content[0].phone",is("0000-0000")))
+                .andExpect(jsonPath("$.content[0].sexo", is("M")));
+
+        verify(listPageUserService).listUserOnPage(pageable);
+
+    }
+
+    @Test
+    @DisplayName("Test to list all users library")
+    void shouldListUsers() throws Exception {
+        when(listUserService.listUserLibrary()).thenReturn(Lists.newArrayList(
+                createUserLibraryDTO().id(1L).build(),
+                createUserLibraryDTO().id(2L).build()
+        ));
+
+        mockMvc.perform(get(URL_USERLIBRARY).accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id",   is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Test")))
+                .andExpect(jsonPath("$.content[0].age",  is(22)))
+                .andExpect(jsonPath("$.content[0].email",is("teste@teste.com")))
+                .andExpect(jsonPath("$.content[0].phone",is("0000-0000")))
+                .andExpect(jsonPath("$.content[0].sexo", is("M")))
+                .andExpect(jsonPath("$.content[1].id",   is(2)))
+                .andExpect(jsonPath("$.content[1].name", is("Test")))
+                .andExpect(jsonPath("$.content[1].age",  is(22)))
+                .andExpect(jsonPath("$.content[1].email",is("teste@teste.com")))
+                .andExpect(jsonPath("$.content[1].phone",is("0000-0000")))
+                .andExpect(jsonPath("$.content[1].sexo", is("M")));
+
+        verify(listUserService).listUserLibrary();
+    }
+
+    @Test
+    @DisplayName("Test to save an User Library when successful")
+    void shouldSaveAnUser() throws Exception {
+        UserLibrary userLibrary = createUserLibrary().build();
+
+        mockMvc.perform(post(URL_USERLIBRARY).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+                .content(objectMapper.writeValueAsString(userLibrary)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        ArgumentCaptor<UserLibrary> captorUser = ArgumentCaptor.forClass(UserLibrary.class);
+        verify(saveUserService).save(captorUser.capture());
+        UserLibrary result = captorUser.getValue();
+
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("Test");
+        assertThat(result.getAge()).isEqualTo(22);
+        assertThat(result.getEmail()).isEqualTo("teste@teste.com");
+        assertThat(result.getPhone()).isEqualTo("0000-0000");
+        assertThat(result.getGender()).isEqualTo("M");
+
+    }
+
+    @Test
+    @DisplayName("Test to try to save without name")
+    void shouldTryToSaveWithoutName() throws Exception {
+        UserLibrary userLibrary = createUserLibrary().id(1L).name("").build();
+
+        mockMvc.perform(post(URL_USERLIBRARY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userLibrary)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    @DisplayName("Test to try to save without phone")
+    void shouldTryToSaveWithoutPhone() throws Exception {
+        UserLibrary userLibrary = createUserLibrary().id(1L).phone("").build();
+
+        mockMvc.perform(post(URL_USERLIBRARY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userLibrary)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Test to try to save without email")
+    void shouldTryToSaveWithoutEmail() throws Exception {
+        UserLibrary userLibrary = createUserLibrary().id(1L).email("").build();
+
+        mockMvc.perform(post(URL_USERLIBRARY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userLibrary)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+
 }
