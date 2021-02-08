@@ -1,6 +1,5 @@
 package com.phoebus.library.userlibrary;
 
-
 import com.phoebus.library.exceptions.UserNotFoundException;
 import com.phoebus.library.userlibrary.service.GetUserServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -27,9 +26,9 @@ import static org.mockito.Mockito.times;
 public class GetUserServiceTest {
 
     @Mock
-    UserLibraryRepository repository;
+    private UserLibraryRepository repository;
 
-    public GetUserServiceImpl getUserService;
+    private GetUserServiceImpl getUserService;
 
     @BeforeEach
     void setUp() {

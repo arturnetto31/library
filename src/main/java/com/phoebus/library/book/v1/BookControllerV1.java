@@ -1,6 +1,5 @@
 package com.phoebus.library.book.v1;
 
-
 import com.phoebus.library.book.Book;
 import com.phoebus.library.book.BookDTO;
 import com.phoebus.library.book.service.DeleteBookService;
@@ -28,7 +27,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/books")
+@RequestMapping("/v1/book")
 public class BookControllerV1 {
     private final DeleteBookService deleteBookService;
     private final EditBookService editBookService;

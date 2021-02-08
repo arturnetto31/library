@@ -1,7 +1,5 @@
 package com.phoebus.library.book.service;
 
-
-import com.phoebus.library.book.Book;
 import com.phoebus.library.book.BookDTO;
 import com.phoebus.library.book.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ public class ListBookServiceImpl implements ListBookService {
 
     @Override
     public List<BookDTO> listBooks() {
-        List<Book> books = repository.findAll();
-        return BookDTO.from(books);
+        return BookDTO.from(repository.findAll());
     }
 }

@@ -1,21 +1,32 @@
 package com.phoebus.library.userlibrary.v1;
 
-
-import com.phoebus.library.userlibrary.UserLibrary;
 import com.phoebus.library.userlibrary.UserLibraryDTO;
-import com.phoebus.library.userlibrary.service.*;
+import com.phoebus.library.userlibrary.service.DeleteUserService;
+import com.phoebus.library.userlibrary.service.EditUserService;
+import com.phoebus.library.userlibrary.service.GetUserService;
+import com.phoebus.library.userlibrary.service.ListPageUserService;
+import com.phoebus.library.userlibrary.service.ListUserService;
+import com.phoebus.library.userlibrary.service.SaveUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/v1/users")
+@RequestMapping(value="/v1/user")
 public class UserLibraryControllerV1 {
     private final DeleteUserService deleteUserService;
     private final EditUserService editUserService;
@@ -32,7 +43,7 @@ public class UserLibraryControllerV1 {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveUser(@RequestBody @Valid UserLibrary newUserLibrary) {
+    public void saveUser(@RequestBody @Valid UserLibraryDTO newUserLibrary) {
         saveUserService.save(newUserLibrary);
     }
 

@@ -1,6 +1,5 @@
 package com.phoebus.library.userlibrary.builders;
 
-
 import com.phoebus.library.userlibrary.UserLibrary;
 
 public class UserLibraryBuilder {

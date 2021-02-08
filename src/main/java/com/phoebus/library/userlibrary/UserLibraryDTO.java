@@ -1,10 +1,17 @@
 package com.phoebus.library.userlibrary;
 
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +25,19 @@ public class UserLibraryDTO {
 
     private Long id;
     @NotEmpty(message = "Name may not be empty")
+    @Size(min = 2)
     private String name;
-    @NotEmpty(message = "Age may not be empty")
+    @NotNull
+    @Min(2)
     private int age;
     @NotEmpty(message = "Phone may not be empty")
+    @Min(8)
     private String phone;
     @NotEmpty(message = "Email may not be empty")
+    @Min(8)
     private String email;
     @NotEmpty(message = "Gender may not be empty")
+    @Max(1)
     private String gender;
 
     public static UserLibraryDTO from(UserLibrary userLibrary) {

@@ -1,6 +1,5 @@
 package com.phoebus.library.purchase.service;
 
-
 import com.phoebus.library.exceptions.PurchaseInconsistencyInDataException;
 import com.phoebus.library.purchase.Purchase;
 import com.phoebus.library.purchase.PurchaseDTO;

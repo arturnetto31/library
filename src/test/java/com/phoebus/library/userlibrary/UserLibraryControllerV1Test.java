@@ -1,11 +1,14 @@
 package com.phoebus.library.userlibrary;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoebus.library.exceptions.UserNotFoundException;
-import com.phoebus.library.userlibrary.service.*;
+import com.phoebus.library.userlibrary.service.DeleteUserService;
+import com.phoebus.library.userlibrary.service.EditUserService;
+import com.phoebus.library.userlibrary.service.GetUserService;
+import com.phoebus.library.userlibrary.service.ListPageUserService;
+import com.phoebus.library.userlibrary.service.ListUserService;
+import com.phoebus.library.userlibrary.service.SaveUserService;
 import com.phoebus.library.userlibrary.v1.UserLibraryControllerV1;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,8 +24,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.phoebus.library.userlibrary.builders.UserLibraryBuilder.createUserLibrary;
 import static com.phoebus.library.userlibrary.builders.UserLibraryBuilderDTO.createUserLibraryDTO;
@@ -32,7 +38,10 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Verify if the controller could do all of the tasks")
 public class UserLibraryControllerV1Test {
 
-    private final String URL_USERLIBRARY = "v1/users";
+    private final String URL_USERLIBRARY = "/v1/user";
 
     @Autowired
     private MockMvc mockMvc;
@@ -151,6 +160,8 @@ public class UserLibraryControllerV1Test {
 
         Pageable pageable = PageRequest.of(0,2);
 
+        when(listPageUserService.listUserOnPage(pageable)).thenReturn(userLibraryDTOPage);
+
         mockMvc.perform(get(URL_USERLIBRARY + "/page/?page=0&size=2").accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -159,7 +170,7 @@ public class UserLibraryControllerV1Test {
                 .andExpect(jsonPath("$.content[0].age",  is(22)))
                 .andExpect(jsonPath("$.content[0].email",is("teste@teste.com")))
                 .andExpect(jsonPath("$.content[0].phone",is("0000-0000")))
-                .andExpect(jsonPath("$.content[0].sexo", is("M")));
+                .andExpect(jsonPath("$.content[0].gender", is("M")));
 
         verify(listPageUserService).listUserOnPage(pageable);
 
@@ -168,27 +179,22 @@ public class UserLibraryControllerV1Test {
     @Test
     @DisplayName("Test to list all users library")
     void shouldListUsers() throws Exception {
-        when(listUserService.listUserLibrary()).thenReturn(Lists.newArrayList(
-                createUserLibraryDTO().id(1L).build(),
-                createUserLibraryDTO().id(2L).build()
-        ));
+      UserLibraryDTO userLibraryDTO = createUserLibraryDTO().id(1L).name("user 1").build();
+      UserLibraryDTO userLibraryDTO2 = createUserLibraryDTO().id(2L).name("user 2").build();
 
-        mockMvc.perform(get(URL_USERLIBRARY).accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+      List<UserLibraryDTO> userLibraryDTOList = Arrays.asList(userLibraryDTO,userLibraryDTO2);
+
+      when(listUserService.listUserLibrary()).thenReturn(userLibraryDTOList);
+
+        MvcResult mvcResult = mockMvc.perform(get(URL_USERLIBRARY).accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(2)))
-                .andExpect(jsonPath("$.content[0].id",   is(1)))
-                .andExpect(jsonPath("$.content[0].name", is("Test")))
-                .andExpect(jsonPath("$.content[0].age",  is(22)))
-                .andExpect(jsonPath("$.content[0].email",is("teste@teste.com")))
-                .andExpect(jsonPath("$.content[0].phone",is("0000-0000")))
-                .andExpect(jsonPath("$.content[0].sexo", is("M")))
-                .andExpect(jsonPath("$.content[1].id",   is(2)))
-                .andExpect(jsonPath("$.content[1].name", is("Test")))
-                .andExpect(jsonPath("$.content[1].age",  is(22)))
-                .andExpect(jsonPath("$.content[1].email",is("teste@teste.com")))
-                .andExpect(jsonPath("$.content[1].phone",is("0000-0000")))
-                .andExpect(jsonPath("$.content[1].sexo", is("M")));
+                .andExpect(jsonPath("$.[*]", hasSize(2))).andReturn();
+
+        String resultResponseBody = mvcResult.getResponse().getContentAsString();
+
+        assertThat(objectMapper.writeValueAsString(userLibraryDTOList))
+                .isEqualToIgnoringWhitespace(resultResponseBody);
 
         verify(listUserService).listUserLibrary();
     }
@@ -196,16 +202,16 @@ public class UserLibraryControllerV1Test {
     @Test
     @DisplayName("Test to save an User Library when successful")
     void shouldSaveAnUser() throws Exception {
-        UserLibrary userLibrary = createUserLibrary().build();
+        UserLibraryDTO userLibrary = createUserLibraryDTO().build();
 
         mockMvc.perform(post(URL_USERLIBRARY).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
                 .content(objectMapper.writeValueAsString(userLibrary)))
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        ArgumentCaptor<UserLibrary> captorUser = ArgumentCaptor.forClass(UserLibrary.class);
+        ArgumentCaptor<UserLibraryDTO> captorUser = ArgumentCaptor.forClass(UserLibraryDTO.class);
         verify(saveUserService).save(captorUser.capture());
-        UserLibrary result = captorUser.getValue();
+        UserLibraryDTO result = captorUser.getValue();
 
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("Test");
@@ -219,11 +225,11 @@ public class UserLibraryControllerV1Test {
     @Test
     @DisplayName("Test to try to save without name")
     void shouldTryToSaveWithoutName() throws Exception {
-        UserLibrary userLibrary = createUserLibrary().id(1L).name("").build();
+        UserLibraryDTO userLibraryDTO = createUserLibraryDTO().id(1L).name("").build();
 
         mockMvc.perform(post(URL_USERLIBRARY)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userLibrary)))
+                .content(objectMapper.writeValueAsString(userLibraryDTO)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 

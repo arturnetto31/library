@@ -1,6 +1,5 @@
 package com.phoebus.library.userlibrary.service;
 
-
 import com.phoebus.library.userlibrary.UserLibraryDTO;
 import com.phoebus.library.userlibrary.UserLibraryRepository;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class ListPageUserServiceImpl implements ListPageUserService{
 
-    private UserLibraryRepository repository;
+    private final UserLibraryRepository repository;
 
     @Override
     public Page<UserLibraryDTO> listUserOnPage(Pageable pageable) {

@@ -1,6 +1,5 @@
 package com.phoebus.library.purchase.v1;
 
-
 import com.phoebus.library.purchase.Purchase;
 import com.phoebus.library.purchase.PurchaseDTO;
 import com.phoebus.library.purchase.service.DeletePurchaseService;
@@ -27,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/v1/purchases")
+@RequestMapping(value="/v1/purchase")
 public class PurchaseControllerV1 {
 
     private final DeletePurchaseService deletePurchaseService;

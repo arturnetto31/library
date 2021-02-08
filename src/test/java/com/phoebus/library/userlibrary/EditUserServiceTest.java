@@ -1,6 +1,5 @@
 package com.phoebus.library.userlibrary;
 
-
 import com.phoebus.library.exceptions.UserInconsistencyInDataException;
 import com.phoebus.library.userlibrary.service.EditUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,9 +31,10 @@ import static org.mockito.Mockito.times;
 public class EditUserServiceTest {
 
     @Mock
-    UserLibraryRepository repository;
+    private UserLibraryRepository repository;
 
-    public EditUserServiceImpl editUserServiceImpl;
+    private EditUserServiceImpl editUserServiceImpl;
+
     @BeforeEach
     void setUp() {
         this.editUserServiceImpl = new EditUserServiceImpl(repository);

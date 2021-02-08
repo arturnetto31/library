@@ -1,6 +1,5 @@
 package com.phoebus.library.userlibrary;
 
-
 import com.phoebus.library.userlibrary.service.ListUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,9 +25,9 @@ import static org.mockito.Mockito.when;
 public class ListUserServiceTest {
 
     @Mock
-    UserLibraryRepository repository;
+    private UserLibraryRepository repository;
 
-    public ListUserServiceImpl listUserService;
+    private ListUserServiceImpl listUserService;
 
     @BeforeEach
     void setUp() {

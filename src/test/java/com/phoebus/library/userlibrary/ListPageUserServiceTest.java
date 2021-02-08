@@ -1,6 +1,5 @@
 package com.phoebus.library.userlibrary;
 
-
 import com.phoebus.library.userlibrary.service.ListPageUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +19,7 @@ import static com.phoebus.library.userlibrary.builders.UserLibraryBuilderDTO.cre
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,9 +28,9 @@ import static org.mockito.Mockito.when;
 public class ListPageUserServiceTest {
 
     @Mock
-    UserLibraryRepository repository;
+    private UserLibraryRepository repository;
 
-    public ListPageUserServiceImpl listPageUserService;
+    private ListPageUserServiceImpl listPageUserService;
 
     @BeforeEach
     void setUp() {
@@ -42,31 +42,34 @@ public class ListPageUserServiceTest {
     void shouldPageUsers() {
 
         Pageable pageable = PageRequest.of(0,2);
-
-        UserLibraryDTO userLibrary = createUserLibraryDTO().build();
         when(listPageUserService.listUserOnPage(pageable))
                 .thenReturn(new PageImpl<>(Collections.nCopies(2, createUserLibraryDTO().build())));
 
-
         Page<UserLibraryDTO> result = listPageUserService.listUserOnPage(pageable);
-        assertAll("Books",
-                () -> assertThat(result.getNumber(), is(0)),
-                () -> assertThat(result.getSize(), is(2)),
 
-                () -> assertThat(result.getContent().get(0).getName(), is(userLibrary.getName())),
-                () -> assertThat(result.getContent().get(0).getAge(), is(userLibrary.getAge())),
-                () -> assertThat(result.getContent().get(0).getPhone(), is(userLibrary.getPhone())),
-                () -> assertThat(result.getContent().get(0).getEmail(), is(userLibrary.getEmail())),
-                () -> assertThat(result.getContent().get(0).getGender(), is(userLibrary.getGender())),
+        UserLibraryDTO userLibrary = createUserLibraryDTO().build();
 
-                () -> assertThat(result.getContent().get(1).getName(), is(userLibrary.getName())),
-                () -> assertThat(result.getContent().get(1).getAge(), is(userLibrary.getAge())),
-                () -> assertThat(result.getContent().get(1).getPhone(), is(userLibrary.getPhone())),
-                () -> assertThat(result.getContent().get(1).getEmail(), is(userLibrary.getEmail())),
-                () -> assertThat(result.getContent().get(1).getGender(), is(userLibrary.getGender()))
+        assertAll("User",
+                ()-> assertThat(result.getNumber(), is(0)),
+                ()-> assertThat(result.getTotalElements(), is(2L)),
+                ()-> assertThat(result.getTotalPages(), is(1)),
+                ()-> assertThat(result.getSize(), is(2)),
+
+                () -> assertThat(result.getContent().get(0).getName(), is("Test")),
+                () -> assertThat(result.getContent().get(0).getAge(), is(22)),
+                () -> assertThat(result.getContent().get(0).getPhone(), is("0000-0000")),
+                () -> assertThat(result.getContent().get(0).getEmail(), is("teste@teste.com")),
+                () -> assertThat(result.getContent().get(0).getGender(), is("M")),
+
+                () -> assertThat(result.getContent().get(1).getName(),is("Test")),
+                () -> assertThat(result.getContent().get(1).getAge(), is(22)),
+                () -> assertThat(result.getContent().get(1).getPhone(), is("0000-0000")),
+                () -> assertThat(result.getContent().get(1).getEmail(), is("teste@teste.com")),
+                () -> assertThat(result.getContent().get(1).getGender(), is("M"))
 
 
                 );
+        verify(listPageUserService.listUserOnPage(pageable));
     }
 
 }
