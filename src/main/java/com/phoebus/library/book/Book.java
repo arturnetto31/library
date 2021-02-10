@@ -37,7 +37,7 @@ public class Book implements Serializable {
     private String title;
     private String synopsis;
 
-
+    @Column(unique = true)
     private String isbn;
 
     private String author;
