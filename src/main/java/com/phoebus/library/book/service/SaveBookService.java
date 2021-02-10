@@ -1,8 +1,8 @@
 package com.phoebus.library.book.service;
 
-import com.phoebus.library.book.Book;
+import com.phoebus.library.book.BookDTO;
 
 @FunctionalInterface
 public interface SaveBookService {
-    public void save(Book book);
+    void save(BookDTO bookDTO);
 }

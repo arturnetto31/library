@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class BookDTO {
     private String isbn;
     @NotEmpty(message = "Author may not be empty")
     private String author;
-    @NotEmpty(message = "Price may not be empty")
+    @NotNull
     private double price;
-    @NotEmpty(message = "Quantity Available may not be empty")
+    @NotNull
     private int quantityAvailable;
     @NotEmpty(message = "Category may not be empty")
     private List<CategoryOfBook> category;
@@ -45,6 +46,7 @@ public class BookDTO {
                 .isbn(book.getIsbn())
                 .author(book.getAuthor())
                 .price(book.getPrice())
+                .quantityAvailable(book.getQuantityAvailable())
                 .category(book.getCategory())
                 .build();
     }

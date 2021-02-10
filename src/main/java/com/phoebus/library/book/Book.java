@@ -1,21 +1,21 @@
 package com.phoebus.library.book;
 
 import com.phoebus.library.categoryofbook.CategoryOfBook;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +37,16 @@ public class Book implements Serializable {
     private String title;
     private String synopsis;
 
-    @Column(unique = true)
+
     private String isbn;
 
     private String author;
     private double price;
     private int quantityAvailable;
-    @OneToMany
-    @PrimaryKeyJoinColumn
+    //@OneToMany
+    //@PrimaryKeyJoinColumn
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JoinColumn(name = "CATEGORY_OF_BOOK")
     private List<CategoryOfBook> category;
 
     public static Book to(BookDTO bookDTO) {

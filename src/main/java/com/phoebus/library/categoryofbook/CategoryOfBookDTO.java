@@ -1,11 +1,14 @@
 package com.phoebus.library.categoryofbook;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
+import org.springframework.data.domain.Page;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CategoryOfBookDTO {
+    private static final long serialVersionUID = 1L;
     private Long id;
-
+    @NotEmpty
+    @Size(min = 2)
     private String name;
 
     public static CategoryOfBookDTO from(CategoryOfBook categoryOfBook) {
@@ -35,6 +40,10 @@ public class CategoryOfBookDTO {
 
         return listCategoryBookDTO;
 
+    }
+
+    public static Page<CategoryOfBookDTO> from(Page<CategoryOfBook> pages) {
+        return pages.map(CategoryOfBookDTO::from);
     }
 
 }

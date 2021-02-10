@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -31,13 +30,13 @@ public class UserLibraryDTO {
     @Min(2)
     private int age;
     @NotEmpty(message = "Phone may not be empty")
-    @Min(8)
+    @Size(min = 8)
     private String phone;
     @NotEmpty(message = "Email may not be empty")
-    @Min(8)
+    @Size(min = 8)
     private String email;
     @NotEmpty(message = "Gender may not be empty")
-    @Max(1)
+    @Size(max = 1)
     private String gender;
 
     public static UserLibraryDTO from(UserLibrary userLibrary) {

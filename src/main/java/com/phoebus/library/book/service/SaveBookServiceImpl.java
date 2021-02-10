@@ -12,8 +12,7 @@ public class SaveBookServiceImpl implements SaveBookService {
     private final BookRepository repository;
 
     @Override
-    public void save(Book book) {
-        repository.save(book);
-        BookDTO.from(book);
+    public void save(BookDTO bookDTO) {
+        repository.save(Book.to(bookDTO));
     }
 }

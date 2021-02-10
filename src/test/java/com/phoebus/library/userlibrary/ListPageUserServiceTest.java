@@ -15,11 +15,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 
-import static com.phoebus.library.userlibrary.builders.UserLibraryBuilderDTO.createUserLibraryDTO;
+import static com.phoebus.library.userlibrary.builders.UserLibraryBuilder.createUserLibrary;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,12 +41,10 @@ public class ListPageUserServiceTest {
     void shouldPageUsers() {
 
         Pageable pageable = PageRequest.of(0,2);
-        when(listPageUserService.listUserOnPage(pageable))
-                .thenReturn(new PageImpl<>(Collections.nCopies(2, createUserLibraryDTO().build())));
+        when(repository.findAll(pageable))
+                .thenReturn(new PageImpl<>(Collections.nCopies(2, createUserLibrary().build())));
 
         Page<UserLibraryDTO> result = listPageUserService.listUserOnPage(pageable);
-
-        UserLibraryDTO userLibrary = createUserLibraryDTO().build();
 
         assertAll("User",
                 ()-> assertThat(result.getNumber(), is(0)),
@@ -69,7 +66,7 @@ public class ListPageUserServiceTest {
 
 
                 );
-        verify(listPageUserService.listUserOnPage(pageable));
+        //verify(repository.findAll(pageable));
     }
 
 }

@@ -17,9 +17,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test to know if the function of find User Library by ID it's valid")
@@ -58,10 +57,10 @@ public class GetUserServiceTest {
     @DisplayName("Shouldn't returns an User Library and throws User Library Not Found Exception")
     void shouldNotFoundExceptionGetUser() {
 
-        when(repository.existsById(anyLong())).thenReturn(false);
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UserNotFoundException.class, () -> getUserService.getUserLibrary(1L));
 
-        verify(repository,times(0)).findById(anyLong());
+        verify(repository).findById(anyLong());
     }
 }
