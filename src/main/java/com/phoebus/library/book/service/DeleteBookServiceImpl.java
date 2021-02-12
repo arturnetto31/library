@@ -1,6 +1,7 @@
 package com.phoebus.library.book.service;
 
 import com.phoebus.library.book.BookRepository;
+import com.phoebus.library.exceptions.BookNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,9 @@ public class DeleteBookServiceImpl implements DeleteBookService{
 
     @Override
     public void delete(Long id) {
+        if(!repository.existsById(id)){
+            throw new BookNotFoundException();
+        }
         repository.deleteById(id);
     }
 }
