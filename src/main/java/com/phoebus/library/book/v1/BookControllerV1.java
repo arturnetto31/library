@@ -73,7 +73,7 @@ public class BookControllerV1 {
         return listBookService.listBooks();
     }
 
-    @GetMapping("/pages")
+    @GetMapping("/page")
     @ResponseStatus(HttpStatus.OK)
     public Page<BookDTO> findPage(Pageable pageable) {
         return listPageBookService.listBookOnPage(pageable);
