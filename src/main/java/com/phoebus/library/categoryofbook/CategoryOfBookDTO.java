@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(builderClassName = "Builder")
 public class CategoryOfBookDTO {
     private static final long serialVersionUID = 1L;
     private Long id;

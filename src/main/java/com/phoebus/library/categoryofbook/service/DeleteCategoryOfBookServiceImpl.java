@@ -1,7 +1,7 @@
 package com.phoebus.library.categoryofbook.service;
 
 import com.phoebus.library.categoryofbook.CategoryOfBookRepository;
-import com.phoebus.library.exceptions.CategoryOfBookNotFound;
+import com.phoebus.library.exceptions.CategoryOfBookNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class DeleteCategoryOfBookServiceImpl implements DeleteCategoryOfBookServ
     @Override
     public void delete(Long id) {
         if(!repository.existsById(id)){
-            throw new CategoryOfBookNotFound();
+            throw new CategoryOfBookNotFoundException();
         }
         repository.deleteById(id);
     }

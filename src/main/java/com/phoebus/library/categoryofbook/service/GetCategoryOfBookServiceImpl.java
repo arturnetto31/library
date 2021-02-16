@@ -2,7 +2,7 @@ package com.phoebus.library.categoryofbook.service;
 
 import com.phoebus.library.categoryofbook.CategoryOfBookDTO;
 import com.phoebus.library.categoryofbook.CategoryOfBookRepository;
-import com.phoebus.library.exceptions.CategoryOfBookNotFound;
+import com.phoebus.library.exceptions.CategoryOfBookNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,6 @@ public class GetCategoryOfBookServiceImpl implements GetCategoryOfBookService{
 
     @Override
     public CategoryOfBookDTO getCategoryOfBook(Long id) {
-        return CategoryOfBookDTO.from(repository.findById(id).orElseThrow(CategoryOfBookNotFound::new));
+        return CategoryOfBookDTO.from(repository.findById(id).orElseThrow(CategoryOfBookNotFoundException::new));
     }
 }
