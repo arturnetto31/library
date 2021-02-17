@@ -1,8 +1,8 @@
 package com.phoebus.library.purchase.service;
 
-import com.phoebus.library.purchase.Purchase;
+import com.phoebus.library.purchase.PurchaseDTO;
 
 @FunctionalInterface
 public interface SavePurchaseService {
-    void save(Purchase purchase);
+    void save(PurchaseDTO purchaseDTO);
 }

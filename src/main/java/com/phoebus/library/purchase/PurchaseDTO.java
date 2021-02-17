@@ -2,14 +2,16 @@ package com.phoebus.library.purchase;
 
 import com.phoebus.library.book.Book;
 import com.phoebus.library.userlibrary.UserLibrary;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +24,16 @@ public class PurchaseDTO {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    @NotEmpty(message = "Customer may not be empty")
+    @NotNull
     private UserLibrary customer;
     @NotEmpty(message = "Shopping list may not be empty")
     private List<Book> shoppingList;
-    @NotEmpty(message = "Price to pay may not be empty")
+    @NotNull
+    @Min(0)
     private double priceToPay;
     @NotEmpty(message = "Purchase date may not be empty")
     private String purchaseDate;
-    @NotEmpty(message = "Purchase Completed may not be empty")
+    @NotNull
     private boolean purchaseCompleted;
 
     public static PurchaseDTO from(Purchase purchase) {

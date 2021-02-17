@@ -58,7 +58,7 @@ public class CategoryOfBookControllerV1 {
     public List<CategoryOfBookDTO> listAllCategoryBook() {
         return listCategoryOfBookService.listAllCategoriesOfBook();
     }
-    @GetMapping("/pages")
+    @GetMapping("/page")
     @ResponseStatus(HttpStatus.OK)
     public Page<CategoryOfBookDTO> listPageCategoryBook(Pageable pageable){
         return listPageCategoryOfBookService.listPageOfCategoryOfBook(pageable);

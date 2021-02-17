@@ -16,8 +16,7 @@ public class ListPagePurchaseServiceImpl implements ListPagePurchaseService{
     public PurchaseRepository repository;
 
     @Override
-    public Page<PurchaseDTO> listPurchaseOnPage(Integer page, Integer size) {
-        Pageable pageRequest = PageRequest.of(page, size, Sort.Direction.ASC, "id");
-        return PurchaseDTO.from(repository.findAll(pageRequest));
+    public Page<PurchaseDTO> listPurchaseOnPage(Pageable pageable) {
+        return PurchaseDTO.from(repository.findAll(pageable));
     }
 }

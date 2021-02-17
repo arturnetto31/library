@@ -12,8 +12,7 @@ public class SavePurchaseServiceImpl implements SavePurchaseService{
     private final PurchaseRepository repository;
 
     @Override
-    public void save(Purchase purchase) {
-        repository.save(purchase);
-        PurchaseDTO.from(purchase);
+    public void save(PurchaseDTO purchaseDTO) {
+        repository.save(Purchase.to(purchaseDTO));
     }
 }
