@@ -1,0 +1,15 @@
+{
+  "id": 118,
+  "title": "teste1",
+  "synopsis": "testando",
+  "isbn": "0000000000",
+  "author": "teste",
+  "price": 150.2,
+  "quantityAvailable": 2,
+  "category": [
+    {
+      "id": 115
+    }
+  ]
+}
+  

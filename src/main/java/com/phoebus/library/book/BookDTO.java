@@ -1,11 +1,11 @@
 package com.phoebus.library.book;
 
 import com.phoebus.library.categoryofbook.CategoryOfBook;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.Min;
@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public class BookDTO {
     @Min(0)
     private int quantityAvailable;
     @NotEmpty(message = "Category may not be empty")
-    private List<CategoryOfBook> category;
+    private Set<CategoryOfBook> category;
 
     public static BookDTO from(Book book){
         return BookDTO.builder()

@@ -3,13 +3,15 @@ package com.phoebus.library.book.builders;
 import com.phoebus.library.book.Book;
 import com.phoebus.library.categoryofbook.CategoryOfBook;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BookBuilder {
     public static Book.Builder createBook() {
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
+
         return Book.builder()
                 .id(1L)
                 .title("teste book")
@@ -18,6 +20,6 @@ public class BookBuilder {
                 .author("teste")
                 .price(150.2)
                 .quantityAvailable(2)
-                .category(category);
+                .category(categoryOfBookSet);
     }
 }

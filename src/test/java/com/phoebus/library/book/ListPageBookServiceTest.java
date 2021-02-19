@@ -15,9 +15,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.phoebus.library.book.builders.BookBuilder.createBook;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,10 +45,11 @@ public class ListPageBookServiceTest {
     void shouldGetPageBook() {
         Pageable pageable = PageRequest.of(0,2);
 
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
 
-        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.nCopies(2, createBook().category(category).build())));
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.nCopies(2, createBook().category(categoryOfBookSet).build())));
         Page<BookDTO> result = listPageBookServiceImpl.listBookOnPage(pageable);
 
         assertAll("Book",
@@ -63,7 +64,7 @@ public class ListPageBookServiceTest {
                 () -> assertThat(result.getContent().get(0).getAuthor(), is("teste")),
                 () -> assertThat(result.getContent().get(0).getPrice(), is(150.2)),
                 () -> assertThat(result.getContent().get(0).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.getContent().get(0).getCategory(), is(category)),
+                () -> assertThat(result.getContent().get(0).getCategory().contains("action"), is(true)),
 
 
                 () -> assertThat(result.getContent().get(1).getTitle(), is("teste book")),
@@ -72,7 +73,7 @@ public class ListPageBookServiceTest {
                 () -> assertThat(result.getContent().get(1).getAuthor(), is("teste")),
                 () -> assertThat(result.getContent().get(1).getPrice(), is(150.2)),
                 () -> assertThat(result.getContent().get(1).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.getContent().get(1).getCategory(), is(category))
+                () -> assertThat(result.getContent().get(1).getCategory().contains("action"), is(true))
 
                 );
     }

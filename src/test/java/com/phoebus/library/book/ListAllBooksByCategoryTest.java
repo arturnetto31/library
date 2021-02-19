@@ -14,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.phoebus.library.book.builders.BookBuilder.createBook;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,11 +42,13 @@ public class ListAllBooksByCategoryTest {
     @Test
     @DisplayName("Should returns a list with books by category")
     void shouldListAllBooksByCategory() {
-        List<CategoryOfBook> category = new ArrayList<>();
+        CategoryOfBook category = new CategoryOfBook(1L,"categoryTest");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
+
         List<Book> allBooks = new ArrayList<>();
 
-        Book book = createBook().category(category).build();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
+        Book book = createBook().category(categoryOfBookSet).build();
         allBooks.add(book);
 
         String categoryTest = "categoryTest";
@@ -59,20 +63,23 @@ public class ListAllBooksByCategoryTest {
                 () -> assertThat(result.get(0).getAuthor(), is("teste")),
                 () -> assertThat(result.get(0).getPrice(), is(150.2)),
                 () -> assertThat(result.get(0).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.get(0).getCategory(), is(category))
+                () -> assertThat(result.get(0).getCategory().contains("categoryTest"), is(true))
                 );
     }
 
     @Test
     @DisplayName("Should not found a list of book by category")
     void shouldNotListAllBooksByCategory() {
-        List<CategoryOfBook> categoryBook = new ArrayList<>();
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
+
         List<Book> bookList = new ArrayList<>();
-        bookList.add(createBook().category(categoryBook).build());
-        String category = "categoryTest";
+        bookList.add(createBook().category(categoryOfBookSet).build());
+        String categoryName = "categoryTest";
 
         when(repository.findAll()).thenReturn(bookList);
 
-        Assertions.assertThrows(BookNotFoundException.class, () -> listAllBooksByCategoryImpl.listAllBooksByCategory(category));
+        Assertions.assertThrows(BookNotFoundException.class, () -> listAllBooksByCategoryImpl.listAllBooksByCategory(categoryName));
     }
 }

@@ -14,11 +14,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="TB_BOOK")
@@ -43,11 +45,11 @@ public class Book implements Serializable {
     private String author;
     private double price;
     private int quantityAvailable;
-    //@OneToMany
-    //@PrimaryKeyJoinColumn
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JoinColumn(name = "CATEGORY_OF_BOOK")
-    private List<CategoryOfBook> category;
+
+    //@OneToMany(cascade = CascadeType.DETACH, orphanRemoval = true)
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @PrimaryKeyJoinColumn
+    private Set<CategoryOfBook> category;
 
     public static Book to(BookDTO bookDTO) {
         return Book.builder()

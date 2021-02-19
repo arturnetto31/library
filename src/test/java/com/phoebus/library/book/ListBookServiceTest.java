@@ -12,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.phoebus.library.book.builders.BookBuilder.createBook;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,10 +41,11 @@ public class ListBookServiceTest {
     void shouldGetListBook() {
         List<Book> bookList = new ArrayList<>();
 
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
 
-        Book book = createBook().category(category).build();
+        Book book = createBook().category(categoryOfBookSet).build();
         bookList.add(book);
 
         when(repository.findAll()).thenReturn(bookList);
@@ -57,7 +60,7 @@ public class ListBookServiceTest {
                 () -> assertThat(result.get(0).getAuthor(), is("teste")),
                 () -> assertThat(result.get(0).getPrice(), is(150.2)),
                 () -> assertThat(result.get(0).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.get(0).getCategory(), is(book.getCategory()))
+                () -> assertThat(result.get(0).getCategory().contains("action"), is(true))
                 );
 
     }

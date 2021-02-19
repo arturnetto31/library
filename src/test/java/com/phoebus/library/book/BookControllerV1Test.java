@@ -15,7 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,19 +27,27 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.net.URL;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.phoebus.library.book.builders.BookBuilderDTO.createBookDTO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -91,66 +98,21 @@ public class BookControllerV1Test {
 
         verify(deleteBookService).delete(1L);
     }
-/*
-NÃO SEI COMO IMPLEMENTAR ESSA PARTE AINDA
-
-    @Test
-    @DisplayName("Test to try delete a book that doesn't exists")
-    void shouldNotDeleteBookById() throws Exception {
-        Book book = createBook().id(2L).build();
-
-        mockMvc.perform(delete(URL_BOOK+"/{id}", 1)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(book))
-        .characterEncoding("utf-8"))
-        .andDo(print())
-        .andExpect(status().isNotFound());
-
-    }
-
- */
 
     @Test
     @DisplayName("Test to edit a book when successful")
     void shouldAttBook() throws Exception {
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
+       mockMvc.perform(put(URL_BOOK + "/{id}", 1L).contentType(MediaType.APPLICATION_JSON).content(readJson("bookUpdate.json")))
+               .andDo(print())
+               .andExpect(status().isNoContent());
 
-        BookDTO bookDTO = createBookDTO().category(category).build();
-
-        mockMvc.perform(put(URL_BOOK + "/{id}",1L)
-        .contentType(MediaType.APPLICATION_JSON)
-        .characterEncoding("utf-8")
-        .content(objectMapper.writeValueAsString(bookDTO)))
-        .andDo(print())
-        .andExpect(status().isNoContent());
-
-        ArgumentCaptor<BookDTO> captorBookDTO = ArgumentCaptor.forClass(BookDTO.class);
-        ArgumentCaptor<Long> captorLong = ArgumentCaptor.forClass(Long.class);
-
-        verify(editBookService).editBook(captorLong.capture(), captorBookDTO.capture());
-
-        BookDTO result = captorBookDTO.getValue();
-        result.setCategory(category);
-
-        assertThat(captorLong.getValue()).isEqualTo(1L);
-        assertThat(result.getId()).isEqualTo(bookDTO.getId());
-        assertThat(result.getTitle()).isEqualTo(bookDTO.getTitle());
-        assertThat(result.getAuthor()).isEqualTo(bookDTO.getAuthor());
-        assertThat(result.getIsbn()).isEqualTo(bookDTO.getIsbn());
-        assertThat(result.getSynopsis()).isEqualTo(bookDTO.getSynopsis());
-        assertThat(result.getQuantityAvailable()).isEqualTo(bookDTO.getQuantityAvailable());
-        assertThat(result.getPrice()).isEqualTo(bookDTO.getPrice());
-        assertThat(result.getCategory()).isEqualTo(category);
+       verify(editBookService).editBook(eq(1L), any(BookDTO.class));
     }
     @Test
     @DisplayName("Test to get a book by id when successful")
     void shouldGetBookById() throws Exception {
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
 
-
-        BookDTO bookDTO = createBookDTO().category(category).build();
+        BookDTO bookDTO = createBookDTO().build();
 
         when(getBookService.getBookDTO(anyLong())).thenReturn(bookDTO);
 
@@ -165,8 +127,9 @@ NÃO SEI COMO IMPLEMENTAR ESSA PARTE AINDA
                 .andExpect(jsonPath("$.isbn", is("0000")))
                 .andExpect(jsonPath("$.author", is("teste")))
                 .andExpect(jsonPath("$.price", is(150.2)))
-                .andExpect(jsonPath("$.quantityAvailable", is(2)));
-                //.andExpect(jsonPath("$.category",is(category)));
+                .andExpect(jsonPath("$.quantityAvailable", is(2)))
+                .andExpect(jsonPath("$.category.[0].id", is(1)))
+                .andExpect(jsonPath("$.category.[0].name", is("action")));
 
         verify(getBookService).getBookDTO(1L);
     }
@@ -235,19 +198,18 @@ NÃO SEI COMO IMPLEMENTAR ESSA PARTE AINDA
     @Test
     @DisplayName("Test to verify if could list book by category")
     void shouldFindListBookByCategory() throws Exception {
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
 
-        String categoryName = category.get(0).getName();
-
-        BookDTO bookDTO = createBookDTO().id(1L).category(category).build();
-        BookDTO bookDTO2 = createBookDTO().id(2L).category(category).build();
+        BookDTO bookDTO = createBookDTO().id(1L).category(categoryOfBookSet).build();
+        BookDTO bookDTO2 = createBookDTO().id(2L).category(categoryOfBookSet).build();
 
         List<BookDTO> bookDTOList = Arrays.asList(bookDTO,bookDTO2);
 
-        when(listAllBooksByCategory.listAllBooksByCategory(categoryName)).thenReturn(bookDTOList);
+        when(listAllBooksByCategory.listAllBooksByCategory("action")).thenReturn(bookDTOList);
 
-        MvcResult mvcResult = mockMvc.perform(get(URL_BOOK + "/listbook/{category}", categoryName).accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+        MvcResult mvcResult = mockMvc.perform(get(URL_BOOK + "/listbook/{category}", "action").accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.[*]",hasSize(2))).andReturn();
@@ -256,35 +218,17 @@ NÃO SEI COMO IMPLEMENTAR ESSA PARTE AINDA
 
         assertThat(objectMapper.writeValueAsString(bookDTOList)).isEqualToIgnoringWhitespace(resultResponseBody);
 
-        verify(listAllBooksByCategory).listAllBooksByCategory(categoryName);
+        verify(listAllBooksByCategory).listAllBooksByCategory("action");
     }
     @Test
     @DisplayName("Test to verify if could save a book when successful")
     void shouldSaveBook() throws Exception {
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
-        BookDTO bookDTO = createBookDTO().category(category).build();
+       mockMvc.perform(post(URL_BOOK).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+       .content(readJson("bookDTO.json")))
+               .andDo(print())
+               .andExpect(status().isCreated());
 
-        mockMvc.perform(post(URL_BOOK).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-        .content(objectMapper.writeValueAsString(bookDTO)))
-        .andDo(print())
-        .andExpect(status().isCreated());
-
-        ArgumentCaptor<BookDTO> captorBook = ArgumentCaptor.forClass(BookDTO.class);
-
-        verify(saveBookService).save(captorBook.capture());
-
-        BookDTO result = captorBook.getValue();
-        result.setCategory(category);
-
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getTitle()).isEqualTo("teste book");
-        assertThat(result.getIsbn()).isEqualTo("0000");
-        assertThat(result.getAuthor()).isEqualTo("teste");
-        assertThat(result.getSynopsis()).isEqualTo("test");
-        assertThat(result.getQuantityAvailable()).isEqualTo(2);
-        assertThat(result.getPrice()).isEqualTo(150.2);
-        assertThat(result.getCategory()).isEqualTo(category);
+       verify(saveBookService).save(any(BookDTO.class));
 
     }
 
@@ -359,19 +303,10 @@ NÃO SEI COMO IMPLEMENTAR ESSA PARTE AINDA
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
- /*
 
-        NÃO SEI COMO IMPLEMENTAR ESSA PARTE AINDA
-    @Test
-    @DisplayName("Should try to save with same isbn")
-    void shouldTrySaveWithSameIsbn() throws Exception {
-        BookDTO bookDTO = createBookDTO().isbn("0000").build();
-
-        mockMvc.perform(post(URL_BOOK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(bookDTO)))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+    public static String readJson(String file) throws Exception {
+        byte[] bytes = Files.readAllBytes(Paths.get("src/test/resources/dataJson/" + file).toAbsolutePath());
+        return new String(bytes);
     }
-*/
+
 }

@@ -41,7 +41,7 @@ public class Purchase implements Serializable {
     @PrimaryKeyJoinColumn
     private UserLibrary customer;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @PrimaryKeyJoinColumn
     private List<Book> shoppingList;
 

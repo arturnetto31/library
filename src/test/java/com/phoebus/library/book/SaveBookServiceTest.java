@@ -13,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.phoebus.library.book.builders.BookBuilder.createBook;
 import static com.phoebus.library.book.builders.BookBuilderDTO.createBookDTO;
@@ -42,11 +44,13 @@ public class SaveBookServiceTest {
     @DisplayName("Should save a book")
     void shouldSaveBook() {
         List<Book> allBooks = new ArrayList<>();
-        List<CategoryOfBook> category = new ArrayList<>();
-        category.add(new CategoryOfBook(1L,"categoryTest"));
 
-        Book book = createBook().isbn("0").category(category).build();
-        BookDTO bookDTO = createBookDTO().category(category).build();
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
+        Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
+        categoryOfBookSet.add(category);
+
+        Book book = createBook().isbn("0").category(categoryOfBookSet).build();
+        BookDTO bookDTO = createBookDTO().category(categoryOfBookSet).build();
         allBooks.add(book);
 
         when(repository.findAll()).thenReturn(allBooks);
@@ -65,7 +69,7 @@ public class SaveBookServiceTest {
                 () -> assertThat(result.getAuthor(), is("teste")),
                 () -> assertThat(result.getPrice(), is(150.2)),
                 () -> assertThat(result.getQuantityAvailable(), is(2)),
-                () -> assertThat(result.getCategory(), is(category))
+                () -> assertThat(result.getCategory().contains("action"), is(true))
 
                 );
 

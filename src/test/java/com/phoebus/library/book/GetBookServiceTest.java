@@ -2,7 +2,6 @@ package com.phoebus.library.book;
 
 
 import com.phoebus.library.book.service.GetBookServiceImpl;
-import com.phoebus.library.categoryofbook.CategoryOfBook;
 import com.phoebus.library.exceptions.BookNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.phoebus.library.book.builders.BookBuilder.createBook;
@@ -47,7 +45,6 @@ public class GetBookServiceTest {
         when(repository.findById(anyLong())).thenReturn(bookOptional);
 
         BookDTO result = this.getBookServiceImpl.getBookDTO(1L);
-        List<CategoryOfBook> category = getBookServiceImpl.getBookDTO(1L).getCategory();
 
 
         assertAll("Book",
@@ -58,7 +55,7 @@ public class GetBookServiceTest {
                 () -> assertThat(result.getPrice(), is(150.2)),
                 () -> assertThat(result.getQuantityAvailable(), is(2)),
                 () -> assertThat(result.getSynopsis(), is("test")),
-                () -> assertThat(result.getCategory(), is(category))
+                () -> assertThat(result.getCategory().contains("action"), is(true))
         );
     }
 
