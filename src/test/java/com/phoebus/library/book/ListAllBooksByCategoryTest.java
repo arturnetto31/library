@@ -42,7 +42,7 @@ public class ListAllBooksByCategoryTest {
     @Test
     @DisplayName("Should returns a list with books by category")
     void shouldListAllBooksByCategory() {
-        CategoryOfBook category = new CategoryOfBook(1L,"categoryTest");
+        CategoryOfBook category = new CategoryOfBook(1L,"action");
         Set<CategoryOfBook> categoryOfBookSet = new HashSet<>();
         categoryOfBookSet.add(category);
 
@@ -51,10 +51,9 @@ public class ListAllBooksByCategoryTest {
         Book book = createBook().category(categoryOfBookSet).build();
         allBooks.add(book);
 
-        String categoryTest = "categoryTest";
-        when(repository.findAll()).thenReturn(allBooks);
+        when(repository.findBookByCategoryName("action")).thenReturn(allBooks);
 
-        List<BookDTO> result = this.listAllBooksByCategoryImpl.listAllBooksByCategory(categoryTest);
+        List<BookDTO> result = listAllBooksByCategoryImpl.listAllBooksByCategory("action");
 
         assertAll("Category of Books",
                 () -> assertThat(result.get(0).getTitle(), is("teste book")),
@@ -63,7 +62,7 @@ public class ListAllBooksByCategoryTest {
                 () -> assertThat(result.get(0).getAuthor(), is("teste")),
                 () -> assertThat(result.get(0).getPrice(), is(150.2)),
                 () -> assertThat(result.get(0).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.get(0).getCategory().contains("categoryTest"), is(true))
+                () -> assertThat(result.get(0).getCategory(), is(categoryOfBookSet))
                 );
     }
 
@@ -77,8 +76,6 @@ public class ListAllBooksByCategoryTest {
         List<Book> bookList = new ArrayList<>();
         bookList.add(createBook().category(categoryOfBookSet).build());
         String categoryName = "categoryTest";
-
-        when(repository.findAll()).thenReturn(bookList);
 
         Assertions.assertThrows(BookNotFoundException.class, () -> listAllBooksByCategoryImpl.listAllBooksByCategory(categoryName));
     }

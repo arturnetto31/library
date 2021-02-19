@@ -69,7 +69,7 @@ public class SaveBookServiceTest {
                 () -> assertThat(result.getAuthor(), is("teste")),
                 () -> assertThat(result.getPrice(), is(150.2)),
                 () -> assertThat(result.getQuantityAvailable(), is(2)),
-                () -> assertThat(result.getCategory().contains("action"), is(true))
+                () -> assertThat(result.getCategory(), is(bookDTO.getCategory()))
 
                 );
 

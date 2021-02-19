@@ -64,7 +64,7 @@ public class ListPageBookServiceTest {
                 () -> assertThat(result.getContent().get(0).getAuthor(), is("teste")),
                 () -> assertThat(result.getContent().get(0).getPrice(), is(150.2)),
                 () -> assertThat(result.getContent().get(0).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.getContent().get(0).getCategory().contains("action"), is(true)),
+                () -> assertThat(result.getContent().get(0).getCategory(), is(categoryOfBookSet)),
 
 
                 () -> assertThat(result.getContent().get(1).getTitle(), is("teste book")),
@@ -73,7 +73,7 @@ public class ListPageBookServiceTest {
                 () -> assertThat(result.getContent().get(1).getAuthor(), is("teste")),
                 () -> assertThat(result.getContent().get(1).getPrice(), is(150.2)),
                 () -> assertThat(result.getContent().get(1).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.getContent().get(1).getCategory().contains("action"), is(true))
+                () -> assertThat(result.getContent().get(1).getCategory(), is(categoryOfBookSet))
 
                 );
     }

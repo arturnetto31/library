@@ -29,7 +29,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(builderClassName = "Builder")
 public class Purchase implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

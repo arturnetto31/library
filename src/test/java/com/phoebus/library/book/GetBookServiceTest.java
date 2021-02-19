@@ -55,7 +55,7 @@ public class GetBookServiceTest {
                 () -> assertThat(result.getPrice(), is(150.2)),
                 () -> assertThat(result.getQuantityAvailable(), is(2)),
                 () -> assertThat(result.getSynopsis(), is("test")),
-                () -> assertThat(result.getCategory().contains("action"), is(true))
+                () -> assertThat(result.getCategory(), is((bookOptional.get().getCategory())))
         );
     }
 

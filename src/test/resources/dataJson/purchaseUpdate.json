@@ -1,0 +1,7 @@
+{
+  "customer":{"id":1},
+  "shoppingList": [{"id":2}],
+  "priceToPay": 200,
+  "purchaseDate": "16.02.2021",
+  "purchaseCompleted": true
+}

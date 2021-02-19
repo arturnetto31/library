@@ -60,7 +60,7 @@ public class ListBookServiceTest {
                 () -> assertThat(result.get(0).getAuthor(), is("teste")),
                 () -> assertThat(result.get(0).getPrice(), is(150.2)),
                 () -> assertThat(result.get(0).getQuantityAvailable(), is(2)),
-                () -> assertThat(result.get(0).getCategory().contains("action"), is(true))
+                () -> assertThat(result.get(0).getCategory(), is(categoryOfBookSet))
                 );
 
     }

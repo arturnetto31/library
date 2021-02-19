@@ -23,6 +23,8 @@ public class AttPurchaseServiceImpl implements AttPurchaseService{
         purchase.setPriceToPay(purchaseDTO.getPriceToPay());
         purchase.setShoppingList(purchaseDTO.getShoppingList());
 
+        repository.save(purchase);
+
 
 
     }

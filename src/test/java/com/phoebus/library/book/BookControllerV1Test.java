@@ -102,7 +102,8 @@ public class BookControllerV1Test {
     @Test
     @DisplayName("Test to edit a book when successful")
     void shouldAttBook() throws Exception {
-       mockMvc.perform(put(URL_BOOK + "/{id}", 1L).contentType(MediaType.APPLICATION_JSON).content(readJson("bookUpdate.json")))
+       mockMvc.perform(put(URL_BOOK + "/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
+               .content(readJson("bookUpdate.json")))
                .andDo(print())
                .andExpect(status().isNoContent());
 
