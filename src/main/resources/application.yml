@@ -5,9 +5,22 @@
 # Exported by: Unregistered user
 # Exported at: Wed, 03 Feb 2021 14:29:59 -0300
 ---
-spring.jpa.properties.hibernate.jdbc.lob.non_creation: "true"
-spring.datasource.url: jdbc:postgresql://localhost:5432/biblioteca-api
-spring.datasource.username: postgres
-spring.datasource.password: "123"
-spring.jpa.hibernate.ddl-auto: update
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/biblioteca-api
+    username: postgres
+    password: "123"
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_creation: "true"
+flyway:
+  baseline-on-migrate: false
+  enabled: true
+  locations: classpath:/db/migration
 ...
