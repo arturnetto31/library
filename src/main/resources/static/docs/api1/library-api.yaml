@@ -1,0 +1,843 @@
+openapi: 3.0.1
+info:
+  description: "This is a simple bookstore-api"
+  version: "1.0.0"
+  title: "Library Bookstore"
+
+tags:
+  - name: "book-controller"
+    description: "All about books in book store"
+  - name: "user-controller"
+    description: "All about client in book store"
+  - name: "categoryofbook-controller"
+    description: "All about category of book in book store"
+  - name: "purchase-controller"
+    description: "All about purchase in book store"
+
+paths:
+  '/v1/user':
+    post:
+      tags:
+        - user-controller
+      operationId: save_user
+      summary: SAVE AN USER 
+      description: Save an user when doesn't exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLibraryDTO'
+        required: true
+      responses:
+        '201':
+          description: CREATED
+    get:
+      tags:
+        - user-controller
+      operationId: find_user_1
+      summary: GET ALL USERS THAT WAS REGISTERED
+      description: Every users that was registered will be in the list here!
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserLibraryDTO'
+          
+          
+          
+          
+  
+  '/v1/user/{id}':
+    get:
+      tags:
+        - user-controller
+      operationId: find_user_2
+      summary: GET AN USER BY ID
+      description: If there are an user with the id that was informed, return that user!
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+            type: integer
+            format: int64 
+      responses:
+        '200':
+          description: OK
+          
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLibraryDTO'
+                
+        '404':
+          description: NOT FOUND
+  
+    put:
+      tags:
+        - user-controller
+      operationId: edit_user
+      summary: EDIT AN USER BY ID
+      description: Find an user by id and edit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLibraryDTO'
+        required: true
+      responses:
+        '204':
+          description: NO CONTENT
+    
+    delete:
+      tags:
+        - user-controller
+      operationId: delete_user
+      summary: DELETE AN USER BY ID
+      description: Find an user by id and delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: NO CONTENT
+          
+          
+          
+  '/v1/user/page':
+    get:
+      tags:
+        - user-controller
+      operationId: find_page_user
+      summary: GET A PAGE USER
+      description: Get a page of users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageUserLibraryDTO'
+          
+          
+          
+          
+          
+  '/v1/book':
+    post:
+      tags:
+        - book-controller
+      operationId: save_book
+      summary: SAVE A BOOK WHEN DOESN'T EXISTS
+      description: SAVE A BOOK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDTO'
+        required: true
+      responses:
+        '201':
+          description: CREATED
+    get:
+      tags:
+        - book-controller
+      operationId: fing_book_1
+      summary: GET ALL BOOKS THAT WAS REGISTERED
+      description: Get all books
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookDTO'
+          
+          
+  
+  '/v1/book/{id}':
+    get:
+      tags:
+        - book-controller
+      operationId: find_book_2
+      summary: GET A BOOK BY ID
+      description: Find in all books that was created and returns the book of id that was informed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '404':
+          description: NOT FOUND
+    put:
+      tags:
+        - book-controller
+      operationId: edit_book
+      summary: EDIT A BOOK BY ID
+      description: Find a book by id and edit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDTO'
+        required: true
+      responses:
+        '204':
+          description: NO CONTENT
+    delete:
+      tags:
+        - book-controller
+      operationId: delete_book
+      summary: DELETE A BOOK BY ID
+      description: Find book by id and delete
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: NO CONTENT
+          
+          
+          
+  '/v1/book/listbook/{category}':
+    get:
+      tags:
+        - book-controller
+      operationId: find_book_3
+      summary: GET ALL BOOKS WITH THAT CATEGORY
+      description: Search and find all book with category
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookDTO'
+                  
+                  
+  '/v1/book/page':
+    get:
+      tags:
+        - book-controller
+      operationId: find_page_book
+      summary: GET A PAGE BOOK
+      description: Get a page of books
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageBookDTO'
+          
+          
+  '/v1/categorybook':
+    get:
+      tags:
+        - categoryofbook-controller
+      operationId: find_categoryBook_1
+      summary: GET ALL CATEGORIES
+      description: Search and find all categories of book
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryOfBookDTO'
+    post:
+      tags:
+        - categoryofbook-controller
+      operationId: save_categoryBook
+      summary: SAVE A CATEGORY OF BOOK        
+      description: Save a category of book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryOfBookDTO'
+        required: true
+      responses:
+        '201':
+          description: CREATED
+          
+          
+          
+  '/v1/categorybook/{id}':
+    get:
+      tags:
+        - categoryofbook-controller
+      operationId: find_categoryBook_2
+      summary: GET A CATEGORY OF BOOK
+      description: Find a category of book by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryOfBookDTO'
+        '404':
+          description: NOT FOUND
+    put:
+      tags:
+        - categoryofbook-controller
+      operationId: edit_categoryBook
+      summary: EDIT A CATEGORY OF BOOK
+      description: Find a category of book by id and edit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryOfBookDTO'
+        required: true
+      responses:
+        '204':
+          description: NO CONTENT
+          
+    delete:
+      tags:
+        - categoryofbook-controller
+      operationId: delete_categoryBook
+      summary: DELETE A CATEGORY OF BOOK
+      description: Find a category of book by id and delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: NO CONTENT
+          
+          
+  '/v1/categorybook/page':
+    get:
+      tags:
+        - categoryofbook-controller
+      operationId: find_page_categoryOfBook
+      summary: GET A PAGE CATEGORY OF BOOK
+      description: Get a page of category of books
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageCategoryOfBookDTO'
+          
+          
+          
+  '/v1/purchase':
+    get:
+      tags:
+        - purchase-controller
+      operationId: find_purchase_1
+      summary: GET ALL PURCHASES
+      description: Find and list all purchases
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/PurchaseDTO'
+    post:
+      tags:
+        - purchase-controller
+      operationId: save_purchase
+      summary: SAVE A PURCHASE
+      description: Save a purchase
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseDTO'
+        required: true
+      responses:
+        '201':
+          description: CREATED
+  
+  
+  
+  
+  '/v1/purchase/{id}':
+    get:
+      tags:
+        - purchase-controller
+      operationId: find_purchase_2
+      summary: GET A PURCHASE BY ID
+      description: Find a purchase by id and returns a purchase
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseDTO'
+        '404':
+          description: NOT FOUND
+    
+    put:
+      tags:
+        - purchase-controller
+      operationId: edit_purchase
+      summary: EDIT A PURCHASE BY ID
+      description: Find a purchase by id and edit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseDTO'
+        required: true
+      responses:
+        '201':
+          description: NO CONTENT
+          
+    delete:
+      tags:
+        - purchase-controller
+      operationId: delete_purchase
+      summary: DELETE PURCHASE BY ID
+      description: Find a purchase by id and delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: NO CONTENT
+          
+  '/v1/purchase/page':
+    get:
+      tags:
+        - purchase-controller
+      operationId: find_page_purchase
+      summary: GET A PAGE PURCHASE
+      description: Get a page of PURCHASES
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePurchaseDTO'
+          
+  
+  
+  
+components:
+  schemas:
+    UserLibraryDTO:
+      required:
+        - name
+        - age
+        - phone
+        - email
+        - gender
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name: 
+          type: string
+        age:
+          minimum: 2
+          type: integer
+          format: int32
+        phone:
+          type: string
+        email:
+          type: string
+        gender:
+          type: string
+          enum:
+            - M
+            - F
+            - O
+            
+    UserLibrary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name: 
+          type: string
+        age:
+          minimum: 2
+          type: integer
+          format: int32
+        phone:
+          type: string
+        email:
+          type: string
+        gender:
+          type: string
+          enum:
+            - M
+            - F
+            - O
+            
+            
+            
+    BookDTO:
+      required:
+        - title
+        - synopsis
+        - isbn
+        - author
+        - price
+        - quantityAvailable
+        - category
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        synopsis:
+          type: string
+        author:
+          type: string
+        price:
+          type: number
+          format: double
+        quantityAvailable:
+          minimum: 0
+          type: integer
+          format: int32
+        category:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryOfBook'
+    
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        synopsis:
+          type: string
+        author:
+          type: string
+        price:
+          type: number
+          format: double
+        quantityAvailable:
+          minimum: 0
+          type: integer
+          format: int32
+        category:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryOfBook'
+    
+    
+    PurchaseDTO:
+      required:
+        - customer
+        - shoppingList
+        - priceToPay
+        - purchaseDate
+        - purchaseCompleted
+        
+      type: object
+      
+      properties:
+        id:
+          type: integer
+          format: int64
+        customer:
+          type: object
+          items:
+            $ref: '#/components/schemas/UserLibrary'
+        shoppingList:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Book'
+        priceToPay:
+          type: number
+          format: double
+        purchaseDate:
+          type: string
+        purchaseCompleted:
+          type: boolean
+          
+    CategoryOfBook:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          
+    CategoryOfBookDTO:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          
+    PageUserLibraryDTO:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLibraryDTO'
+        empty:
+          type: boolean
+    
+    PageCategoryOfBookDTO:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryOfBookDTO'
+        empty:
+          type: boolean
+    PageBookDTO:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookDTO'
+        empty:
+          type: boolean
+
+    
+    PagePurchaseDTO:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseDTO'
+        empty:
+          type: boolean
+         
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+        offset:
+          type: integer
+          format: int64
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+    
+           
+        
+      
+      
+    
+    
+    
