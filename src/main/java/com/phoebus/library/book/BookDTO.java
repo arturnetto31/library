@@ -9,7 +9,6 @@ import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -26,16 +25,16 @@ public class BookDTO {
 
     private Long id;
 
-    @NotEmpty(message = "Title may not be empty")
+    @NotNull
     @Size(min = 2)
     private String title;
-    @NotEmpty(message = "Synopsis may not be empty")
+    @NotNull
     @Size(min = 3)
     private String synopsis;
-    @NotEmpty(message = "ISBN may not be empty")
+    @NotNull
     @Size(min = 3)
     private String isbn;
-    @NotEmpty(message = "Author may not be empty")
+    @NotNull
     @Size(min = 3)
     private String author;
     @NotNull
@@ -44,7 +43,7 @@ public class BookDTO {
     @NotNull
     @Min(0)
     private int quantityAvailable;
-    @NotEmpty(message = "Category may not be empty")
+    @NotNull
     private Set<CategoryOfBook> category;
 
     public static BookDTO from(Book book){
